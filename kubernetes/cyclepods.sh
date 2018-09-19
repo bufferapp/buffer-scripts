@@ -30,9 +30,14 @@ fi
 read -p "Press any key to continue or control+c to cancel... " -n1 -s
 echo "starting..."
 
+COMPLETED="0"
+
 for POD in "${PODS[@]}"
 do
-  kubectl delete $POD
+  REMAINING=`expr $TOTAL_PODS - $COMPLETED`
+  echo "$REMAINING remaining pods"
+  kubectl delete $POD #--grace-period 1 #0 --force
+  COMPLETED=`expr $COMPLETED + 1`
   echo "Sleeping $SLEEP seconds..."
   sleep $SLEEP
 done
